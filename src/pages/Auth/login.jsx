@@ -1,12 +1,18 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { cn } from "@/lib/utils"; 
 import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import { Eye, EyeOff } from "lucide-react"; 
 import { loginValidation } from "../../utils/validation"; 
+import { sendData } from "../../hooks/sendData";
 import toast, { Toaster } from 'react-hot-toast';
 import LefSide from "./components/LefSide";
+import { AuthContext } from "../../context/context";
+
 
 function Login() {
+
+  const { setAuthState } = useContext(AuthContext);
+
   const emailRef = useRef();
   const passwordRef = useRef();
   const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +36,41 @@ function Login() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    toast.dismiss();
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+    
+    const { isValid, errors } = loginValidation(email, password);
+    
+    if (!isValid) {
+      return setErrors(errors);
+    }
+    
+    setErrors({});
+    setIsLoading(true);
+
+    try {
+      const response = await sendData("/auth/login", { email, password });
+      if (response.status === 201) {
+        setSuccess(true);
+        clearForm();
+        toast.success('Login successful!  redirecting ... ');
+        localStorage.setItem('token',response.data.access_token)
+        setAuthState({ isAuthenticated: true });
+
+        localStorage.setItem("isAuthenticated", true);
+        setTimeout(() => {
+          navigate("/");
+        }, 2000); // Redirect after 2 seconds
+      } else {
+        throw new Error('Login failed');
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      toast.error(error.response?.data?.message || 'An error occurred');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
