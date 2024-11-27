@@ -1,12 +1,22 @@
 // src/utils/validation.js
 
 // Function to validate the registration form
-export const validateRegister = ({ username, email, password, roles }) => {
+export const validateRegister = ({ username, firstName, lastName, email, password, roles }) => {
   const errors = {};
 
   // Validate username
   if (typeof username !== 'string' || username.trim().length < 3) {
     errors.username = "Username must be at least 3 characters long.";
+  }
+
+  // Validate firstName
+  if (typeof firstName !== 'string' || firstName.trim().length < 3) {
+    errors.firstName = "First name must be at least 3 characters long.";
+  }
+
+  // Validate lastName
+  if (typeof lastName !== 'string' || lastName.trim().length < 3) {
+    errors.lastName = "Last name must be at least 3 characters long.";
   }
 
   // Validate email
@@ -16,21 +26,19 @@ export const validateRegister = ({ username, email, password, roles }) => {
   }
 
   // Validate password
-  if (!password || password.length < 6) {
+  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  if (!password || !passwordPattern.test(password)) {
     errors.password =
       "Password must be at least 8 characters long, including an uppercase letter, a lowercase letter, a number, and a special character.";
   }
 
-  // Validate roles
-  if (!roles || !Array.isArray(roles) || roles.length === 0 || ![ "Client", "Livreur"].includes(roles[0])) {
-    errors.roles = "Please select a valid role.";
-  }
-
+  
   return {
     isValid: Object.keys(errors).length === 0,
     errors,
   };
 };
+
 
 // Function to validate the login form
 export const loginValidation = (email, password) => {
