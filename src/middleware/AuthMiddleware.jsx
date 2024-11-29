@@ -10,6 +10,7 @@ const AuthMiddleware = ({ children }) => {
     useEffect(() => {
         if (!authState.isAuthenticated) {
             console.log("User is not authenticated");
+            
             navigate("/login", { state: { from: location.pathname } });
         }
     }, [authState.isAuthenticated, navigate, location]);
