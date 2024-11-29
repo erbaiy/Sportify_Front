@@ -21,6 +21,8 @@ useEffect(() => {
     return (
         <div>
             hello in page event dashboard 
+
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. In, facilis. Sapiente nostrum maxime cumque quae! Sunt exercitationem, error totam corporis omnis ipsum fuga? Vero similique aspernatur hic sapiente quas eius?
             
 
         </div>
