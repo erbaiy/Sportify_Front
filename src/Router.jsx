@@ -8,9 +8,10 @@ import Login from './pages/Auth/Login';
 import Home from './pages/Dashboard/Home';
 import AuthMiddleware from "./middleware/AuthMiddleware";
 import Layout from "./layouts/layout";
-import  Events from "./pages/Dashboard/Event";
-import CrecateEvents from "./pages/Dashboard/create-event";
-import EventForm from "./pages/Dashboard/EventForm";
+import EventForm from "./pages/Dashboard/event/EventForm";
+import Events from './pages/Dashboard/event/Event';
+import EventRegistrationForm from "./pages/Dashboard/registration/registration";
+import Participants from "./pages/Dashboard/registration/participants";
 
 const AppRouter = () => {
     return (
@@ -31,12 +32,9 @@ const AppRouter = () => {
                 {/* Nested Routes within Layout */}
                 <Route index element={<Home />} />
                 <Route path="/event" element={<Events/>} />
-                <Route path="/create-event" element={<EventForm/>} />
-
-
-
-
-
+                <Route path="/create-event" element={<EventForm/>}/>
+                <Route path="/registration/:id" element={<EventRegistrationForm/>}/>
+                <Route path="/participants" element={<Participants/>}/>
             </Route>
         </Routes>
     );

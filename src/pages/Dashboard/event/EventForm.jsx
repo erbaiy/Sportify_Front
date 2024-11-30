@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { sendData } from '../../hooks/sendData';
+import { sendData } from '../../../hooks/sendData';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
