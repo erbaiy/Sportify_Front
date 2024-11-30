@@ -8,6 +8,7 @@ import { RiPieChartLine } from "react-icons/ri";
 import { LayoutDashboard, Settings, Users, Grid, Menu, PieChart } from "lucide-react";
 import { GrSort } from "react-icons/gr";
 import { Outlet } from "react-router-dom"; // Import Outlet for nested routes
+import Participants from './../pages/Dashboard/registration/participants';
 
 
 export default function Layout({ children }) {
@@ -22,7 +23,8 @@ export default function Layout({ children }) {
       {/* Sidebar */}
       <aside className="w-64 bg-white shadow-lg">
         <div className="p-4 border-b">
-          <h2 className="text-xl font-bold">My App</h2>
+          <h2 className="text-xl font-bold">Sportify</h2>
+          
         </div>
         <nav className="p-4">
           <ul className="space-y-2">
@@ -35,10 +37,10 @@ export default function Layout({ children }) {
                 onClick={() => handleItemClick("Dashboard")}
               >
                 <LayoutDashboard size={20} />
-                <span>Dashboard</span>
+                <span>Sportify</span>
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 className={`flex items-center space-x-2 p-2 rounded hover:bg-gray-200 ${
                   selectedItem === "Report" ? "bg-gray-200" : ""
@@ -49,7 +51,7 @@ export default function Layout({ children }) {
                 <PieChart size={20} />
                 <span>Report</span>
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 className={`flex items-center space-x-2 p-2 rounded hover:bg-gray-200 ${
@@ -67,14 +69,14 @@ export default function Layout({ children }) {
                 className={`flex items-center space-x-2 p-2 rounded hover:bg-gray-200 ${
                   selectedItem === "Users List" ? "bg-gray-200" : ""
                 }`}
-                to="/user-list"
+                to="/event"
                 onClick={() => handleItemClick("Users List")}
               >
                 <GrSort size={18} />
-                <span>Users List</span>
+                <span>Event List</span>
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 className={`flex items-center space-x-2 p-2 rounded hover:bg-gray-200 ${
                   selectedItem === "Supers" ? "bg-gray-200" : ""
@@ -85,31 +87,20 @@ export default function Layout({ children }) {
                 <Grid size={20} />
                 <span>Supers</span>
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 className={`flex items-center space-x-2 p-2 rounded hover:bg-gray-200 ${
                   selectedItem === "Users" ? "bg-gray-200" : ""
                 }`}
-                to="/users"
+                to="/participants"
                 onClick={() => handleItemClick("Users")}
               >
                 <Users size={20} />
-                <span>Users</span>
+                <span>Participants</span>
               </Link>
             </li>
-            <li>
-              <Link
-                className={`flex items-center space-x-2 p-2 rounded hover:bg-gray-200 ${
-                  selectedItem === "Restos" ? "bg-gray-200" : ""
-                }`}
-                to="/restos"
-                onClick={() => handleItemClick("Restos")}
-              >
-                <BiDish size={20} />
-                <span>Restos</span>
-              </Link>
-            </li>
+
           </ul>
         </nav>
         <div className="p-4 border-t">
