@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import axiosInstance from "../../config/axios";
 import Logout from "../Auth/Logout";
-import DataTable from "./Event";
+import DataTable from "./event/Event";
 
 function Home() {
 console.log("hello")

@@ -83,27 +83,7 @@ export const login2FAValidation = (email, otp) => {
 };
 
 
-// Function to validate the verify OTP form
-export const verifyOtpValidation = (email, otp) => {
-  const errors = {};
 
-  // Validate email
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!email || !emailPattern.test(email)) {
-    errors.email = "Please enter a valid email address.";
-  }
-
-  // Validate OTP
-  if (!otp || otp.length== 6) {
-    errors.otp = "OTP must be  6 characters .";
-  }
-
-  return {
-    isValid: Object.keys(errors).length === 0,
-    errors,
-  };
-};
-  
 
 export  const  validateEmail=(email)=>{
   const errors = {};
@@ -142,3 +122,8 @@ export const newPasswordValidation = (password, newPassword) => {
 
   return { isValid, errors };
 };
+
+
+
+
+

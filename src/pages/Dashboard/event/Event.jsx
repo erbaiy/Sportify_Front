@@ -1,11 +1,16 @@
 
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import foto from '../../components/ui/static.png';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import foto from '../../../assets/static.png'
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+
 
 function Events() {
+    const navigate = useNavigate();
+
   const [events, setEvents] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [eventsPerPage] = useState(5);
@@ -125,6 +130,7 @@ return (
                         <th className="w-32 py-3 px-4 border-b border-r">Max Participants</th>
                         <th className="w-48 py-3 px-4 border-b border-r">Registration Deadline</th>
                         <th className="w-32 py-3 px-4 border-b border-r">Status</th>
+                        <th className="w-32 py-3 px-4 border-b">participants</th>
                         <th className="w-32 py-3 px-4 border-b">Actions</th>
                     </tr>
                 </thead>
@@ -151,7 +157,10 @@ return (
                                 {new Date(event.registrationDeadline).toLocaleDateString()}
                             </td>
                             <td className="py-2 px-4 border-b border-r">{event.status}</td>
-                            <td className="py-2 px-4 border-b text-center">
+<td className='py-2 px-4 border-b border-r'>
+    <button onClick={() => navigate(`/participants?event=${event._id}`)}>Participants</button>
+</td>
+<td className="py-2 px-4 border-b text-center">
                                 <button 
                                     onClick={() => handleEdit(event)}
                                     className="bg-green-600 hover:bg-green-500 text-white py-1 px-3 mr-2 rounded shadow-md"
@@ -164,6 +173,14 @@ return (
                                 >
                                     Delete
                                 </button>
+
+                                <Link to={`/registration/${event._id}`}>
+                                    <button>
+                                        registration
+                                    </button>
+                                </Link>
+
+                                
                             </td>
                         </tr>
                     ))}
@@ -273,6 +290,8 @@ return (
                                 rows="4"
                             />
                         </div>
+
+                        
                         <div className="flex justify-end gap-2"
                         style={{ display: "flex"}}    
                         >
