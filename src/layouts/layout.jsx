@@ -1,22 +1,42 @@
 
 'use client'
 
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { BiDish } from "react-icons/bi";
 import { RiPieChartLine } from "react-icons/ri";
 import { LayoutDashboard, Settings, Users, Grid, Menu, PieChart } from "lucide-react";
 import { GrSort } from "react-icons/gr";
 import { Outlet } from "react-router-dom"; // Import Outlet for nested routes
 import Participants from './../pages/Dashboard/registration/participants';
+import { CiLogout } from "react-icons/ci";
+import { sendData } from "../hooks/sendData";
+import { AuthContext } from "../context/context";
+
 
 
 export default function Layout({ children }) {
+  const { setAuthState } = useContext(AuthContext);
+
   const [selectedItem, setSelectedItem] = useState("Dashboard");
+  const navigate=useNavigate();
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
+
+  // logout function
+  const hundleLogout = async() => {
+    try{
+        localStorage.clear();
+        
+        setAuthState({ isAuthenticated: false });
+    }catch(err){
+      console.log(err)
+  }
+  }
+
+
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -33,37 +53,14 @@ export default function Layout({ children }) {
                 className={`flex items-center space-x-2 p-2 rounded hover:bg-gray-200 ${
                   selectedItem === "Dashboard" ? "bg-gray-200" : ""
                 }`}
-                to="/dashboard"
+                to="/"
                 onClick={() => handleItemClick("Dashboard")}
               >
                 <LayoutDashboard size={20} />
                 <span>Sportify</span>
               </Link>
             </li>
-            {/* <li>
-              <Link
-                className={`flex items-center space-x-2 p-2 rounded hover:bg-gray-200 ${
-                  selectedItem === "Report" ? "bg-gray-200" : ""
-                }`}
-                to="/report"
-                onClick={() => handleItemClick("Report")}
-              >
-                <PieChart size={20} />
-                <span>Report</span>
-              </Link>
-            </li> */}
-            <li>
-              <Link
-                className={`flex items-center space-x-2 p-2 rounded hover:bg-gray-200 ${
-                  selectedItem === "Menu" ? "bg-gray-200" : ""
-                }`}
-                to="/menu"
-                onClick={() => handleItemClick("Menu")}
-              >
-                <Menu size={20} />
-                <span>Menu</span>
-              </Link>
-            </li>
+          
             <li>
               <Link
                 className={`flex items-center space-x-2 p-2 rounded hover:bg-gray-200 ${
@@ -121,8 +118,9 @@ export default function Layout({ children }) {
           <h1 className="text-xl font-bold">Dashboard</h1>
           <div className="flex space-x-4">
             <button className="p-2 rounded hover:bg-gray-200">
-              <Settings className="h-5 w-5" />
-              <span className="sr-only">Settings</span>
+              <CiLogout onClick={hundleLogout}
+              className="h-5 w-5" />
+              <span className="sr-only">logout</span>
             </button>
             <button className="p-2 rounded hover:bg-gray-200">
               <Users className="h-5 w-5" />

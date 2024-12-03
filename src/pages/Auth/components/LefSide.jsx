@@ -5,7 +5,8 @@ const  LefSide =    () => {
         <div className="absolute inset-0 bg-zinc-900" />
         <div className="relative z-20 flex items-center text-lg font-medium">
           <h1 className="text-4xl font-bold">
-            All<span className="text-blue-700">o</span>Media
+          
+          Sport<span className="text-blue-700">i</span>fy
           </h1>
         </div>
         
@@ -14,7 +15,7 @@ const  LefSide =    () => {
 
 
           <blockquote className="space-y-2">
-            <p className="text-lg">&ldquo;M3a AloMedia Hna kan 3ndk kl 7aga&rdquo;</p>
+            <p className="text-lg">&ldquo;&rdquo;</p>
           </blockquote>
         </div>
       </div>
