@@ -7,21 +7,25 @@ import LeftSide from './components/LefSide';
 import toast, { Toaster } from 'react-hot-toast';
 
 function Register() {
+  //  initialize the useNavigate hook
+  const navigate = useNavigate();
+
+  // Initialize the states for errors, isLoading, and showPassword
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
+  //make reference to the input fields
   const usernameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
   const firstNameRef=useRef();
   const lastNameRef=useRef();
 
-  const navigate = useNavigate();
-
+  //  toggle password visibility
   const togglePasswordVisibility = () => setShowPassword(prev => !prev);
 
-
+  // handle the form submission and send the data to the server
   const handleSubmit = async (e) => {
     e.preventDefault();
 

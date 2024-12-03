@@ -1,7 +1,7 @@
 // src/utils/validation.js
 
 // Function to validate the registration form
-export const validateRegister = ({ username, firstName, lastName, email, password, roles }) => {
+export const validateRegister = ({ username, firstName, lastName, email, password }) => {
   const errors = {};
 
   // Validate username
@@ -61,26 +61,6 @@ export const loginValidation = (email, password) => {
   };
 };
 
-//  function to validate the login2FA  
-export const login2FAValidation = (email, otp) => {
-  const errors = {};
-
-  // Validate email
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!email || !emailPattern.test(email)) {
-    errors.email = "Please enter a valid email address.";
-  }
-
-  // Validate OTP
-  if (!otp || otp.length < 6) {
-    errors.otp = "OTP  must be at  6 characters .";
-  }
-
-  return {
-    isValid: Object.keys(errors).length === 0,
-    errors,
-  };
-};
 
 
 
@@ -99,29 +79,7 @@ export  const  validateEmail=(email)=>{
 
 };
 
-export const newPasswordValidation = (password, newPassword) => {
-  const errors = {};
 
-  // Validate password length
-  if (!password || password.length < 6) {
-    errors.password = "Password must be at least 6 characters long.";
-  }
-
-  // Validate new password length
-  if (!newPassword || newPassword.length < 6) {
-    errors.newPassword = "New password must be at least 6 characters long.";
-  }
-
-  // Check if new password matches the original password
-  if (newPassword !== password) {
-    errors.newPasswordMatch = "New password does not match the original password.";
-  }
-
-  // Determine overall validity
-  const isValid = Object.keys(errors).length === 0;
-
-  return { isValid, errors };
-};
 
 
 

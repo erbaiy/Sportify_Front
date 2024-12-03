@@ -10,7 +10,7 @@ import { validateEmail } from '../../../utils/validation';
 function Participants() {
     const [participants, setParticipants] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [participantsPerPage] = useState(5);
+    const [participantsPerPage] = useState(8);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({
@@ -28,9 +28,10 @@ function Participants() {
     }, [eventId]);
 
     const fetchParticipants = async () => {
-        if (eventId) {
+        // if (eventId) {
             try {
-                const response = await fetch(`http://localhost:3000/registrations?event=${eventId}`);
+                const url = eventId ? `http://localhost:3000/registrations?event=${eventId}` : 'http://localhost:3000/registrations';
+                const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error('Failed to fetch participants');
                 }
@@ -40,7 +41,7 @@ function Participants() {
                 console.error('Error fetching participants:', error);
                 toast.error('Failed to load participants');
             }
-        }
+        // }
     };
 
     const handleDelete = async (id) => {
@@ -164,66 +165,69 @@ function Participants() {
                         </tr>
                     </thead>
                     <tbody>
-                        {currentParticipants.map((participant) => (
-                            <tr key={participant._id} className="hover:bg-gray-50">
-                                <td className="py-2 px-4 border-b border-r truncate">{participant.event.title}</td>
-                                <td className="py-2 px-4 border-b border-r">
-                                    {new Date(participant.event.date).toLocaleDateString()}
-                                </td>
-                                <td className="py-2 px-4 border-b border-r truncate">{participant.event.location}</td>
-                                <td className="py-2 px-4 border-b border-r">{participant.participantName}</td>
-                                <td className="py-2 px-4 border-b border-r">{participant.participantEmail}</td>
-                                <td className="py-2 px-4 border-b">
-                                    <div className="flex gap-2 justify-center">
-                                        <button 
-                                            onClick={() => handleEdit(participant)}
-                                            className="bg-green-600 hover:bg-green-500 text-white py-1 px-3 rounded shadow-md"
-                                        >
-                                            <FaEdit />
-                                        </button>
-                                        <button 
-                                            className="bg-red-600 hover:bg-red-500 text-white py-1 px-3 rounded shadow-md" 
-                                            onClick={() => handleDelete(participant._id)}
-                                        >
-                                            <FaTrash />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
+    {currentParticipants.map((participant) => (
+        <tr key={participant._id} className="hover:bg-gray-50">
+            <td className="py-2 px-4 border-b border-r truncate">
+                {participant.event ? participant.event.title : 'N/A'}
+            </td>
+            <td className="py-2 px-4 border-b border-r">
+                {participant.event ? new Date(participant.event.date).toLocaleDateString() : 'N/A'}
+            </td>
+            <td className="py-2 px-4 border-b border-r truncate">
+                {participant.event ? participant.event.location : 'N/A'}
+            </td>
+            <td className="py-2 px-4 border-b border-r">{participant.participantName}</td>
+            <td className="py-2 px-4 border-b border-r">{participant.participantEmail}</td>
+            <td className="py-2 px-4 border-b">
+                <div className="flex gap-2 justify-center">
+                    <button 
+                        onClick={() => handleEdit(participant)}
+                        className="bg-green-600 hover:bg-green-500 text-white py-1 px-3 rounded shadow-md"
+                    >
+                        <FaEdit />
+                    </button>
+                    <button 
+                        className="bg-red-600 hover:bg-red-500 text-white py-1 px-3 rounded shadow-md" 
+                        onClick={() => handleDelete(participant._id)}
+                    >
+                        <FaTrash />
+                    </button>
+                </div>
+            </td>
+        </tr>
+    ))}
+</tbody>
                 </table>
             </div>
 
-            {/* Pagination */}
-            <div className="flex justify-center mt-4 gap-2">
-                <button
-                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                    disabled={currentPage === 1}
-                    className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-                >
-                    Previous
-                </button>
-                {[...Array(totalPages)].map((_, index) => (
-                    <button
-                        key={index + 1}
-                        onClick={() => setCurrentPage(index + 1)}
-                        className={`px-4 py-2 rounded ${
-                            currentPage === index + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'
-                        }`}
-                    >
-                        {index + 1}
-                    </button>
-                ))}
-                <button
-                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                    disabled={currentPage === totalPages}
-                    className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-                >
-                    Next
-                </button>
-            </div>
-
+         {/* Pagination */}
+<div className="flex justify-center mt-4 gap-2">
+    <button
+        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+        disabled={currentPage === 1}
+        className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+    >
+        Previous
+    </button>
+    {[...Array(totalPages)].map((_, index) => (
+        <button
+            key={index + 1}
+            onClick={() => setCurrentPage(index + 1)}
+            className={`px-4 py-2 rounded ${
+                currentPage === index + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'
+            }`}
+        >
+            {index + 1}
+        </button>
+    ))}
+    <button
+        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+        disabled={currentPage === totalPages}
+        className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+    >
+        Next
+    </button>
+</div>
             {/* Edit Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
