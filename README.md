@@ -89,7 +89,6 @@ npm run dev
 - Registration list generation and printing
 - Authentication and authorization
 - Protected routes
-
 ## Components Architecture
 
 ### Common Components

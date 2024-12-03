@@ -11,11 +11,15 @@ import { useNavigate } from 'react-router-dom';
 function Events() {
     const navigate = useNavigate();
 
+  // events state
   const [events, setEvents] = useState([]);
+  // pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [eventsPerPage] = useState(5);
+  // modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  // form data state
   const [formData, setFormData] = useState({
     title: '',
     location: '',
@@ -26,10 +30,11 @@ function Events() {
     description: ''
   });
 
+  // fetch events on component mount
   useEffect(() => {
     fetchEvents();
   }, []);
-
+  // fetch events from the server
   const fetchEvents = async () => {
     try {
       const response = await fetch('http://localhost:3000/events');
@@ -39,7 +44,7 @@ function Events() {
       console.error('Error fetching events:', error);
     }
   };
-
+  // delete event
   const handleDelete = (id) => async () => {
     try {
       const response = await fetch(`http://localhost:3000/events/${id}`, { 
@@ -68,7 +73,6 @@ function Events() {
       status: event.status,
       description: event.description
     });
-
 
     setIsModalOpen(true);
   };
@@ -139,7 +143,7 @@ return (
                         <tr key={event._id} className="hover:bg-gray-50">
                             <td className="py-2 px-4 border-b border-r">
                                 <img 
-                                    src={event.image ? `http://localhost:3000${event.image}` : foto} 
+                                    src={event.image ? `http://localhost:3000/uploads/${event.image}` : foto} 
                                     className="w-40 h-40 object-cover rounded-full" 
                                     alt={event.title} 
                                 />

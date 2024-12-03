@@ -9,7 +9,6 @@ function EventForm() {
     location: '',
     date: '',
     registrationDeadline: '',
-    maxParticipants: '',
     status: 'upcoming',
     description: '',
     image: null,
@@ -20,17 +19,17 @@ function EventForm() {
 
   const validateForm = (data) => {
     const errors = {};
-    
+
     if (!data.title.trim()) {
       errors.title = 'Title is required';
     } else if (data.title.length < 3) {
       errors.title = 'Title must be at least 3 characters';
     }
-  
+
     if (!data.location.trim()) {
       errors.location = 'Location is required';
     }
-  
+
     if (!data.date) {
       errors.date = 'Event date is required';
     } else {
@@ -40,7 +39,7 @@ function EventForm() {
         errors.date = 'Event date cannot be in the past';
       }
     }
-  
+
     if (!data.registrationDeadline) {
       errors.registrationDeadline = 'Registration deadline is required';
     } else {
@@ -50,29 +49,13 @@ function EventForm() {
         errors.registrationDeadline = 'Registration deadline must be before event date';
       }
     }
-  
-    if (!data.maxParticipants) {
-      errors.maxParticipants = 'Maximum participants is required';
-    } else {
-      const maxParticipantsValue = data.maxParticipants;
-      if (!/^\d+$/.test(maxParticipantsValue)) {
-        errors.maxParticipants = 'Maximum participants must be a number';
-      } else {
-        const participants = parseInt(maxParticipantsValue, 10);
-        if (participants < 1) {
-          errors.maxParticipants = 'Maximum participants must be at least 1';
-        } else if (participants > 1000) {
-          errors.maxParticipants = 'Maximum participants cannot exceed 1000';
-        }
-      }
-    }
-  
+
     if (!data.description.trim()) {
       errors.description = 'Description is required';
     } else if (data.description.length < 20) {
       errors.description = 'Description must be at least 20 characters';
     }
-  
+
     return errors;
   };
 
@@ -102,48 +85,53 @@ function EventForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validateForm(formData);
-    
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    const submitData = {
-      ...formData,
-      maxParticipants: parseInt(formData.maxParticipants, 10),
-    };
+    const formDataToSend = new FormData();
+    // Append all text fields
+    Object.keys(formData).forEach((key) => {
+      if (key !== 'image') {
+        formDataToSend.append(key, formData[key]);
+      }
+    });
+
+    // Append image if exists
+    if (formData.image) {
+      formDataToSend.append('image', formData.image);
+    }
 
     try {
-      const response = await sendData('http://localhost:3000/events', submitData);
+      const response = await sendData('/events', formDataToSend);
       console.log('Data sent successfully:', response);
       toast.success('Event created successfully!');
 
-      // Reset form after successful submission
       setFormData({
         title: '',
         location: '',
         date: '',
         registrationDeadline: '',
-        maxParticipants: '',
         status: 'upcoming',
         description: '',
         image: null,
       });
       setImagePreview(null);
       setErrors({});
-
     } catch (error) {
       console.error('Error sending data:', error);
       toast.error('Error sending data, please try again.');
     }
   };
 
-  const renderInputField = (name, label, type = "text", options = {}) => (
+  const renderInputField = (name, label, type = 'text', options = {}) => (
     <div className="space-y-2">
       <label htmlFor={name} className="block text-lg font-medium text-gray-700">
         {label}
       </label>
-      {type === "select" ? (
+      {type === 'select' ? (
         <select
           id={name}
           name={name}
@@ -152,13 +140,13 @@ function EventForm() {
           className={`w-full p-3 border rounded-md ${errors[name] ? 'border-red-500' : 'border-gray-300'}`}
           required
         >
-          {options.map(option => (
+          {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
           ))}
         </select>
-      ) : type === "textarea" ? (
+      ) : type === 'textarea' ? (
         <textarea
           id={name}
           name={name}
@@ -198,26 +186,23 @@ function EventForm() {
         pauseOnHover
       />
       <form onSubmit={handleSubmit} className="space-y-6">
-        {renderInputField("title", "Event Title")}
-        {renderInputField("location", "Location")}
-        {renderInputField("date", "Event Date", "date")}
-        {renderInputField("registrationDeadline", "Registration Deadline", "date")}
-        {renderInputField("maxParticipants", "Max Participants", "text", {
-          placeholder: "Enter maximum participants",
-          pattern: "^[0-9]*$",
-          inputMode: "numeric"
-        })}
-        {renderInputField("status", "Event Status", "select", [
-          { value: "upcoming", label: "Upcoming" },
-          { value: "ongoing", label: "Ongoing" },
-          { value: "completed", label: "Completed" }
+        {renderInputField('title', 'Event Title')}
+        {renderInputField('location', 'Location')}
+        {renderInputField('date', 'Event Date', 'date')}
+        {renderInputField('registrationDeadline', 'Registration Deadline', 'date')}
+        {renderInputField('status', 'Event Status', 'select', [
+          { value: 'upcoming', label: 'Upcoming' },
+          { value: 'ongoing', label: 'Ongoing' },
+          { value: 'completed', label: 'Completed' },
         ])}
-        {renderInputField("description", "Event Description", "textarea", {
-          placeholder: "Enter event description"
+        {renderInputField('description', 'Event Description', 'textarea', {
+          placeholder: 'Enter event description',
         })}
 
         <div className="space-y-2">
-          <label htmlFor="image" className="block text-lg font-medium text-gray-700">Event Image</label>
+          <label htmlFor="image" className="block text-lg font-medium text-gray-700">
+            Event Image
+          </label>
           <input
             id="image"
             name="image"
@@ -248,7 +233,6 @@ function EventForm() {
                 location: '',
                 date: '',
                 registrationDeadline: '',
-                maxParticipants: '',
                 status: 'upcoming',
                 description: '',
                 image: null,
