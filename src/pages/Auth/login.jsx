@@ -1,36 +1,84 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { cn } from "@/lib/utils"; 
 import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import { Eye, EyeOff } from "lucide-react"; 
 import { loginValidation } from "../../utils/validation"; 
+import { sendData } from "../../hooks/sendData";
 import toast, { Toaster } from 'react-hot-toast';
 import LefSide from "./components/LefSide";
+import { AuthContext } from "../../context/context";
+
 
 function Login() {
+
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  //call the setAuthState function from the AuthContext
+  const { setAuthState } = useContext(AuthContext);
+
+  // make reference to the email and password input fields
   const emailRef = useRef();
   const passwordRef = useRef();
+  // Initialize the success state
+  const [success, setSuccess] = useState(false);
+
+
+  // Initialize the states
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [notSuccess, setNotSuccess] = useState(false);
-  const [backendError, setBackendError] = useState(false);
-  
-  const navigate = useNavigate(); // Initialize useNavigate
 
+  // function to toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
 
-
+  // clear the form fields after submission
   const clearForm = () => {
     emailRef.current.value = '';
     passwordRef.current.value = '';
     setErrors({});
   };
+
+  // handle the form submission and send the data to the server
   const handleSubmit = async (e) => {
+
     e.preventDefault();
-  
+    
+    toast.dismiss();
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+    
+    const { isValid, errors } = loginValidation(email, password);
+    
+    if (!isValid) {
+      return setErrors(errors);
+    }
+    
+    setErrors({});
+    setIsLoading(true);
+
+    try {
+      const response = await sendData("/auth/login", { email, password });
+      if (response.status === 201) {
+        setSuccess(true);
+        clearForm();
+        toast.success('Login successful!  redirecting ... ');
+        localStorage.setItem('token',response.data.access_token)
+        setAuthState({ isAuthenticated: true });
+        localStorage.setItem("isAuthenticated", true);
+        setTimeout(() => {
+          navigate("/");
+        }, 2000); // Redirect after 2 seconds
+      } else {
+        throw new Error('Login failed');
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      toast.error(error.response?.data?.message || 'An error occurred');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -83,8 +131,11 @@ function Login() {
             </button>
           </form>
           <p className="px-8 text-center text-sm text-muted-foreground">
-            Are you forget you're password?, Click here {" "}
-            <Link to="/forget-password" className="underline hover:text-primary">forget-password</Link> .
+            Don't have an account
+            ?, Click here {" "}
+            <Link to="/forget-password" className="underline hover:text-primary">
+              signup
+            </Link> .
             
           </p>
         </div>

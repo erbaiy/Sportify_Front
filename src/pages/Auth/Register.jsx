@@ -1,34 +1,79 @@
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, User, Truck } from "lucide-react";
+import { validateRegister } from "../../utils/validation";
+import { sendData } from "../../hooks/sendData";
 import LeftSide from './components/LefSide';
+import toast, { Toaster } from 'react-hot-toast';
 
 function Register() {
+  //  initialize the useNavigate hook
+  const navigate = useNavigate();
+
+  // Initialize the states for errors, isLoading, and showPassword
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
+  //make reference to the input fields
   const usernameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
-  const roleRef = useRef();
+  const firstNameRef=useRef();
+  const lastNameRef=useRef();
 
-  const navigate = useNavigate();
-
+  //  toggle password visibility
   const togglePasswordVisibility = () => setShowPassword(prev => !prev);
 
-  const roleIcons = {
-    Client: User,
-    Livreur: Truck,
-  };
-
+  // handle the form submission and send the data to the server
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const formData = {
+      username: usernameRef.current.value,
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+      firstName:firstNameRef.current.value,
+      lastName:lastNameRef.current.value,
+    };
+
+    const { isValid, errors: validationErrors } = validateRegister(formData);
+
+    if (!isValid) {
+      console.log('not valid',errors)
+      setErrors(validationErrors);
+      return;
+    }
+    console.log('valid')
+
+    setIsLoading(true);
+
+    try {
+
+      const response = await sendData("/auth/register", formData );
+   
+      if (response.status === 201) {
+        toast.success('Registration successful! Please verify your account.');
+        setTimeout(() => navigate('/login'), 2000);
+        localStorage.clear();
+      } else {
+        throw new Error("Unexpected error occurred.");
+      }
+    } catch (error) {
+
+      toast.error(error.response?.data?.error || 'Something went wrong.');
+      if (error.response?.status === 400) {
+        const backendErrors = error.response.data.errors;
+        setErrors(prevErrors => ({ ...prevErrors, ...backendErrors }));
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="container relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+      <Toaster position="top-center" reverseOrder={false} />
       <LeftSide />
       
       <div className="lg:p-8 pt-44 m-[30px]">
@@ -47,6 +92,25 @@ function Register() {
                 required
               />
               {errors.username && <p className="text-red-500 text-sm">{errors.username}</p>}
+              {/* firstName */}
+              <input
+                type="text"
+                ref={firstNameRef}
+                className={`border p-2 rounded-md ${errors.firstName ? "border-red-500" : ""}`}
+                placeholder="firstName"
+                required
+              />
+              {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
+
+              {/* lastName */}
+              <input
+                type="text"
+                ref={lastNameRef}
+                className={`border p-2 rounded-md ${errors.lastName ? "border-red-500" : ""}`}
+                placeholder="lastName"
+                required
+              />
+              {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
 
               <input
                 type="email"
@@ -71,24 +135,7 @@ function Register() {
               </div>
               {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
 
-              <label className="text-sm font-medium text-gray-700">Select Role</label>
-              <div className="space-y-2 flex justify-between">
-                {Object.entries(roleIcons).map(([role, Icon]) => (
-                  <label key={role} className="flex items-center space-x-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="roles"
-                      value={role}
-                      className="form-radio text-blue-600"
-                      ref={roleRef}
-                      required
-                    />
-                    <Icon size={18} className="text-gray-600" />
-                    <span>{role}</span>
-                  </label>
-                ))}
-              </div>
-              {errors.roles && <p className="text-red-500 text-sm">{errors.roles}</p>}
+             
             </div>
 
             <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors" disabled={isLoading}>
