@@ -11,25 +11,29 @@ import { useNavigate } from 'react-router-dom';
 function Events() {
     const navigate = useNavigate();
 
+  // events state
   const [events, setEvents] = useState([]);
+  // pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [eventsPerPage] = useState(5);
+  // modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  // form data state
   const [formData, setFormData] = useState({
     title: '',
     location: '',
     date: '',
     registrationDeadline: '',
-    maxParticipants: '',
     status: 'upcoming',
     description: ''
   });
 
+  // fetch events on component mount
   useEffect(() => {
     fetchEvents();
   }, []);
-
+  // fetch events from the server
   const fetchEvents = async () => {
     try {
       const response = await fetch('http://localhost:3000/events');
@@ -39,7 +43,7 @@ function Events() {
       console.error('Error fetching events:', error);
     }
   };
-
+  // delete event
   const handleDelete = (id) => async () => {
     try {
       const response = await fetch(`http://localhost:3000/events/${id}`, { 
@@ -64,11 +68,9 @@ function Events() {
       location: event.location,
       date: new Date(event.date).toISOString().split('T')[0],
       registrationDeadline: new Date(event.registrationDeadline).toISOString().split('T')[0],
-      maxParticipants: event.maxParticipants,
       status: event.status,
       description: event.description
     });
-
 
     setIsModalOpen(true);
   };
@@ -127,7 +129,6 @@ return (
                         <th className="w-64 py-3 px-4 border-b border-r">Description</th>
                         <th className="w-32 py-3 px-4 border-b border-r">Date</th>
                         <th className="w-48 py-3 px-4 border-b border-r">Location</th>
-                        <th className="w-32 py-3 px-4 border-b border-r">Max Participants</th>
                         <th className="w-48 py-3 px-4 border-b border-r">Registration Deadline</th>
                         <th className="w-32 py-3 px-4 border-b border-r">Status</th>
                         <th className="w-32 py-3 px-4 border-b">participants</th>
@@ -139,7 +140,7 @@ return (
                         <tr key={event._id} className="hover:bg-gray-50">
                             <td className="py-2 px-4 border-b border-r">
                                 <img 
-                                    src={event.image ? `http://localhost:3000${event.image}` : foto} 
+                                    src={event.image ? `http://localhost:3000/uploads/${event.image}` : foto} 
                                     className="w-40 h-40 object-cover rounded-full" 
                                     alt={event.title} 
                                 />
@@ -150,9 +151,7 @@ return (
                                 {new Date(event.date).toLocaleDateString()}
                             </td>
                             <td className="py-2 px-4 border-b border-r truncate">{event.location}</td>
-                            <td className="py-2 px-4 border-b border-r text-center">
-                                {event.maxParticipants ?? 'N/A'}
-                            </td>
+                            
                             <td className="py-2 px-4 border-b border-r">
                                 {new Date(event.registrationDeadline).toLocaleDateString()}
                             </td>
@@ -258,15 +257,7 @@ return (
                                     className="w-full p-2 border rounded"
                                 />
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Max Participants</label>
-                                <input
-                                    type="number"
-                                    value={formData.maxParticipants}
-                                    onChange={(e) => setFormData({...formData, maxParticipants: e.target.value})}
-                                    className="w-full p-2 border rounded"
-                                />
-                            </div>
+                            
                             <div>
                                 <label className="block text-sm font-medium mb-1">Status</label>
                                 <select
@@ -274,7 +265,6 @@ return (
                                     onChange={(e) => setFormData({...formData, status: e.target.value})}
                                     className="w-full p-2 border rounded"
                                 >
-                                    <option value="upcoming">Upcoming</option>
                                     <option value="ongoing">Ongoing</option>
                                     <option value="completed">Completed</option>
                                     <option value="cancelled">Cancelled</option>
