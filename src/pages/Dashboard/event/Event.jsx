@@ -25,7 +25,6 @@ function Events() {
     location: '',
     date: '',
     registrationDeadline: '',
-    maxParticipants: '',
     status: 'upcoming',
     description: ''
   });
@@ -69,7 +68,6 @@ function Events() {
       location: event.location,
       date: new Date(event.date).toISOString().split('T')[0],
       registrationDeadline: new Date(event.registrationDeadline).toISOString().split('T')[0],
-      maxParticipants: event.maxParticipants,
       status: event.status,
       description: event.description
     });
@@ -131,7 +129,6 @@ return (
                         <th className="w-64 py-3 px-4 border-b border-r">Description</th>
                         <th className="w-32 py-3 px-4 border-b border-r">Date</th>
                         <th className="w-48 py-3 px-4 border-b border-r">Location</th>
-                        <th className="w-32 py-3 px-4 border-b border-r">Max Participants</th>
                         <th className="w-48 py-3 px-4 border-b border-r">Registration Deadline</th>
                         <th className="w-32 py-3 px-4 border-b border-r">Status</th>
                         <th className="w-32 py-3 px-4 border-b">participants</th>
@@ -154,9 +151,7 @@ return (
                                 {new Date(event.date).toLocaleDateString()}
                             </td>
                             <td className="py-2 px-4 border-b border-r truncate">{event.location}</td>
-                            <td className="py-2 px-4 border-b border-r text-center">
-                                {event.maxParticipants ?? 'N/A'}
-                            </td>
+                            
                             <td className="py-2 px-4 border-b border-r">
                                 {new Date(event.registrationDeadline).toLocaleDateString()}
                             </td>
@@ -262,15 +257,7 @@ return (
                                     className="w-full p-2 border rounded"
                                 />
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Max Participants</label>
-                                <input
-                                    type="number"
-                                    value={formData.maxParticipants}
-                                    onChange={(e) => setFormData({...formData, maxParticipants: e.target.value})}
-                                    className="w-full p-2 border rounded"
-                                />
-                            </div>
+                            
                             <div>
                                 <label className="block text-sm font-medium mb-1">Status</label>
                                 <select
@@ -278,7 +265,6 @@ return (
                                     onChange={(e) => setFormData({...formData, status: e.target.value})}
                                     className="w-full p-2 border rounded"
                                 >
-                                    <option value="upcoming">Upcoming</option>
                                     <option value="ongoing">Ongoing</option>
                                     <option value="completed">Completed</option>
                                     <option value="cancelled">Cancelled</option>
